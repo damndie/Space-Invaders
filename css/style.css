@@ -1,0 +1,26 @@
+body {
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+.cell {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.683);
+}
+
+img {
+    width: 70px;
+    height: 70px;
+}
+
+.board-container {
+    margin: auto;
+}
+
+.lastline {
+    background-color: red;
+}
