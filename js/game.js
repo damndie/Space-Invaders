@@ -6,32 +6,39 @@ const ALIEN_ROW_COUNT = 3
 
 const HERO = '🤖'
 const ALIEN = '👽'
-const LASER = '⤊'
 const SKY = ''
 
 // Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN} 
 var gBoard
 var gGame = {
     isOn: false,
-    alienCount: 0
+    score: 0,
+    alienCount: 0,
 }
 
 // Called when game loads 
 function onInit() {
+    gGame.isOn = true
     gBoard = createBoard()
+    gGame.score = 0
+    document.querySelector('h1 span').innerText = '0'
     createHero(gBoard)
     createAliens(gBoard)
     renderBoard(gBoard)
 }
+
 // Create and returns the board with aliens on top, ground at bottom 
 // use the functions: createCell, createHero, createAliens  
 function createBoard() {
     const board = []
-    for(var i = 0; i < BOARD_SIZE; i++){
+    for (var i = 0; i < BOARD_SIZE; i++) {
         board.push([])
-        for(var j = 0; j < BOARD_SIZE; j++){
-           board[i][j] = createCell()
-            console.log('board[i][j]:', board[i][j])
+        for (var j = 0; j < BOARD_SIZE; j++) {
+            board[i][j] = createCell()
+            if (i === 0 || i === BOARD_SIZE - 1 || j === 0 || j === BOARD_SIZE - 1 || i === 1 || i < BOARD_SIZE - 1) {
+                board[i][j].type = SKY;
+            }
+            // console.log('board[i][j]:', board[i][j])
         }
     }
     return board
@@ -39,23 +46,21 @@ function createBoard() {
 
 // Render the board as a <table> to the page 
 function renderBoard(board) {
-   var strHTML = ''
-   for(var i = 0; i < board.length; i++){
-    strHTML += '<tr>'
-    for(var j = 0; j < board[0].length; j++){
-        var cell = board[i][j]
-        var cellContent = cell === gHero ? HERO : cell
-        strHTML += `<td class="cell" data-i="${i}" data-j="${j}">
+    var strHTML = ''
+    for (var i = 0; i < board.length; i++) {
+        strHTML += '<tr>'
+        for (var j = 0; j < board[0].length; j++) {
+            var cell = board[i][j]
+            var cellContent = cell.gameObject || ''
+            strHTML += `<td class="cell" data-i="${i}" data-j="${j}">
         ${cellContent}
         </td>`
+        }
+        strHTML += '</tr>'
     }
-    strHTML += '</tr>'
-   }
-   const elBoard = document.querySelector('.board-container')
-   elBoard.innerHTML = strHTML
+    const elBoard = document.querySelector('.board-container')
+    elBoard.innerHTML = strHTML
 }
-
-
 
 // position such as: {i: 2, j: 7} 
 function updateCell(pos, gameObject = null) {
@@ -66,7 +71,7 @@ function updateCell(pos, gameObject = null) {
 
 function createCell(gameObject = null) {
     return {
-        type: SKY,
+        type: '',
         gameObject: gameObject
     }
 }
@@ -74,11 +79,10 @@ function createCell(gameObject = null) {
 function updateScore(diff) {
     // update model and dom
     gGame.score += diff
-    document.querySelector('h2 span').innerText = gGame.score
+    document.querySelector('h1 span').innerText = gGame.score
 }
 
-
-
-
-
+function checkVictory() {
+    if (gGame.alienCount) return
+}
 
