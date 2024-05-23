@@ -1,9 +1,10 @@
 'use strict'
 
 const LASER_SPEED = 80
+const LASER_DURATION = 2000
 var gLaserInterval
-const LASER = '⤊'
-var gHero = { pos: { i: 13, j: 7 }, isShoot: false }
+const LASER = '🔴'
+var gHero = { pos: { i: 12, j: 7 }, isShoot: false }
 
 // creates the hero and place it on board 
 function createHero(board) {
@@ -11,6 +12,7 @@ function createHero(board) {
     board[heroPos.i][heroPos.j].gameObject = HERO
     // console.log('gHero:', gHero)
     // console.log('heroPos:', heroPos)
+
 }
 
 
@@ -25,7 +27,10 @@ function onKeyDown(eventKeyboard) {
             break
         case 'Space':
             shoot()
-        default: return null
+            break
+        case 'KeyN':
+            blowUpNegs()
+            break
     }
 }
 
@@ -39,37 +44,67 @@ function onMoveHero(dir) {
     updateCell(gHero.pos, null)
     gHero.pos = nextPos
     updateCell(gHero.pos, HERO)
+    renderBoard(gBoard)
 }
 
 // Sets an interval for shutting (blinking) the laser up towards aliens 
 function shoot() {
+    if (!gGame.isOn) return
     if (gHero.isShoot) return
     gHero.isShoot = true
-    gLaserInterval = setInterval(shootProgress, LASER_SPEED)
-}
-
-// Interval function shoot
-function shootProgress() {
-    var laserPos = { i: gHero.pos.i - 1, j: gHero.pos.j }
-    updateCell(laserPos, null)
-
-    while (laserPos.i >= 0 && gBoard[laserPos.i][laserPos.j].gameObject !== ALIEN) {
-
-        handleAlienHit(laserPos)
+    laserSound()
+    var laserPos = { i: gHero.pos.i, j: gHero.pos.j }
+    gLaserInterval = setInterval(() => {
         blinkLaser(laserPos)
-        updateCell({ i: laserPos.i + 1, j: laserPos.j }, null)
-        updateCell(gHero.pos, HERO)
-        laserPos.i--
-
-    }
-    return
+        
+    }, LASER_SPEED)
 }
 
 // renders a LASER at specific cell for short time and removes it 
 function blinkLaser(pos) {
-    updateCell(pos, LASER);
 
-    setTimeout(() => {
-        updateCell(pos, null);
-    }, 500);
+    const nextPos = { i: pos.i - 1, j: pos.j }
+    const nextCell = gBoard[nextPos.i][nextPos.j].gameObject
+
+
+    if (!nextPos.i || nextCell === ALIEN) {
+        clearInterval(gLaserInterval)
+        gHero.isShoot = false
+        updateCell(pos)
+        if (!pos.i) return
+        else if (nextCell === ALIEN) {
+            var target = ALIEN
+            handleAlienHit(nextPos, target)
+        }
+    } else {
+        if (pos.i !== gHero.pos.i) {
+            updateCell(pos)
+        }
+        pos.i--
+
+        updateCell(pos, LASER)
+    }
+
 }
+
+
+
+
+function hasAlienNegs(board, rowIdx, colIdx){
+    var count = 0
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (i === rowIdx && j === colIdx) continue
+            if (j < 0 || j >= board[0].length) continue
+            var currCell = board[i][j]
+            if (currCell.gameObject === ALIEN) count++
+        }
+    }
+    return count
+}
+
+function blowUpNegs(){
+
+}
+

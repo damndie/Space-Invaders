@@ -10,10 +10,17 @@
 
 <body onload="onInit()" onkeydown="onKeyDown(event)">
     <h1> Score: <span>0</span></h1>
-
+    <h1>Controls: Space to shoot</h1>
+    <div class="restart">
+        <button class="restart-btn" onclick="startGame(this)">Start</button>
+    </div>
+    <!-- <button>Start</button>
+    <button>Restart</button> -->
     <table class="board-container">
         
     </table>
+
+    
 
     <script src="js/util.js"></script>
     <script src="js/hero.js"></script>

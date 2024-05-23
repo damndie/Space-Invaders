@@ -9,7 +9,7 @@ body {
     height: 70px;
     text-align: center;
     color: black;
-    background-color: rgba(255, 255, 255, 0.683);
+    background-color: black;
 }
 
 img {
@@ -21,6 +21,34 @@ img {
     margin: auto;
 }
 
-.lastline {
+
+.modal {
+    background-color: rgb(227, 172, 76, 0.9);
+    color: black;
+    border: 5px solid black;
+    width: 300px;
+    padding: 20px;
+    position: absolute;
+    top: 300px;
+    left: calc(50% - 175px);
+}
+
+.hide {
+    display: 'none'
+}
+
+.ground{
     background-color: red;
+    border-radius: 5px;
+}
+
+.button {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
 }

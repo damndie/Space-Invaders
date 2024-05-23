@@ -4,8 +4,9 @@ const BOARD_SIZE = 14
 const ALIEN_ROW_LENGTH = 8
 const ALIEN_ROW_COUNT = 3
 
-const HERO = '🤖'
-const ALIEN = '👽'
+const HERO = '<img src="img/hero.jpg"'
+const ALIEN = '<img src="img/aliens.jpg"'
+const EXPLOSION = '💥'
 const SKY = ''
 
 // Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN} 
@@ -13,7 +14,7 @@ var gBoard
 var gGame = {
     isOn: false,
     score: 0,
-    alienCount: 0,
+    alienCount: ALIEN_ROW_LENGTH * ALIEN_ROW_COUNT
 }
 
 // Called when game loads 
@@ -34,10 +35,8 @@ function createBoard() {
     for (var i = 0; i < BOARD_SIZE; i++) {
         board.push([])
         for (var j = 0; j < BOARD_SIZE; j++) {
-            board[i][j] = createCell()
-            if (i === 0 || i === BOARD_SIZE - 1 || j === 0 || j === BOARD_SIZE - 1 || i === 1 || i < BOARD_SIZE - 1) {
-                board[i][j].type = SKY;
-            }
+            var type = (i === BOARD_SIZE - 1) ? 'ground' : 'sky'
+            board[i][j] = createCell('', type);
             // console.log('board[i][j]:', board[i][j])
         }
     }
@@ -51,9 +50,9 @@ function renderBoard(board) {
         strHTML += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
             var cell = board[i][j]
-            var cellContent = cell.gameObject || ''
-            strHTML += `<td class="cell" data-i="${i}" data-j="${j}">
-        ${cellContent}
+            var cellClass = (cell.type === 'ground') ? 'cell ground' : 'cell'
+            strHTML += `<td class="${cellClass}"  data-i="${i}" data-j="${j}">
+        ${cell.gameObject}
         </td>`
         }
         strHTML += '</tr>'
@@ -63,26 +62,36 @@ function renderBoard(board) {
 }
 
 // position such as: {i: 2, j: 7} 
-function updateCell(pos, gameObject = null) {
+function updateCell(pos, gameObject = null, type = 'sky') {
     gBoard[pos.i][pos.j].gameObject = gameObject
+    gBoard[pos.i][pos.j].type = type
     var elCell = getElCell(pos)
     elCell.innerHTML = gameObject || ''
 }
 
-function createCell(gameObject = null) {
+function createCell(gameObject = null, type = 'sky') {
     return {
-        type: '',
-        gameObject: gameObject
+        type: type,
+        gameObject: gameObject,
     }
 }
 
 function updateScore(diff) {
     // update model and dom
-    gGame.score += diff
+    if (gGame.isOn) gGame.score += diff
+    else gGame.score = 0
     document.querySelector('h1 span').innerText = gGame.score
 }
 
 function checkVictory() {
-    if (gGame.alienCount) return
+    if (gGame.alienCount === 0) return
+}
+
+function gameOver() {
+
+}
+
+function endGame() {
+
 }
 
