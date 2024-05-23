@@ -9,23 +9,35 @@
 </head>
 
 <body onload="onInit()" onkeydown="onKeyDown(event)">
-    <h1> Score: <span>0</span></h1>
-    <h1>Controls: Space to shoot</h1>
-    <div class="restart">
-        <button class="restart-btn" onclick="startGame(this)">Start</button>
+    <h1>Space Invader</h1>
+    <hr>
+    <div class="container">
+        <div class="game-info">
+            <div> Score: <span class="Score">0</span> |
+                <span>Keys:</span> |
+                <span>F5 = Restart</span> |
+                <span>Space = Shoot</span> |
+                <span>Arrows = Right/Left</span>
+            </div>
+        </div>
     </div>
-    <!-- <button>Start</button>
-    <button>Restart</button> -->
-    <table class="board-container">
-        
-    </table>
 
     
+    <table class="board-container">
+
+    </table>
+
+
+    <footer>
+        Made by Daniel Vinitsky
+    </footer>
 
     <script src="js/util.js"></script>
     <script src="js/hero.js"></script>
     <script src="js/game.js"></script>
     <script src="js/alien.js"></script>
+
+
 </body>
 
 

@@ -1,8 +1,10 @@
 'use strict'
 
 const ALIEN_SPEED = 500
+const ROCK = '🪨'
 var gIntervalAliens
 var gDeadAliens = []
+var gAliensRockInterval
 
 
 // The following two variables represent the part of the matrix (some rows) 
@@ -21,32 +23,26 @@ function createAliens(board) {
     for (var i = 0; i < ALIEN_ROW_COUNT; i++) {
         for (var j = 0; j < ALIEN_ROW_LENGTH; j++) {
             board[i][startCol + j].gameObject = ALIEN
-            gGame.alienCount++
+            // console.log('gGame.alienCount:', gGame.alienCount)
         }
     }
     if (gIntervalAliens) clearInterval(gIntervalAliens)
     gIntervalAliens = setInterval(moveAliens, ALIEN_SPEED)
 }
 
-function handleAlienHit(pos, target) {
-    updateScore(10)
+function handleHit(pos, target) {
     if (target === ALIEN) {
         gDeadAliens.push(pos)
-        if (checkVictory()) {
-            gameOver()
-            return
-        }
+        renderBoard(gBoard)
+        // console.log('gDeadAliens:', gDeadAliens)
     }
-    else {
-        upScore = 50;
-        gIsAlienFreeze = true;
-        setTimeout(() => {
-            gIsAlienFreeze = false;
-        }, 5000);
-    }
+    updateScore(10)
+    updateCell(pos, EXPLOSION)
     setTimeout(() => {
         updateCell(pos);
-    }, 150);
+    }, 100);
+    gGame.alienCount--
+
 }
 
 function shiftBoardRight(board, fromI, toI) {
@@ -124,3 +120,4 @@ function moveAliens() {
         return
     }
 }
+

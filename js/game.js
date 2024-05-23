@@ -14,17 +14,19 @@ var gBoard
 var gGame = {
     isOn: false,
     score: 0,
-    alienCount: ALIEN_ROW_LENGTH * ALIEN_ROW_COUNT
+    alienCount: ALIEN_ROW_LENGTH * ALIEN_ROW_COUNT,
 }
 
 // Called when game loads 
 function onInit() {
     gGame.isOn = true
+    gGame.isSuperMode = false
     gBoard = createBoard()
     gGame.score = 0
-    document.querySelector('h1 span').innerText = '0'
+    document.querySelector('span').innerText = '0'
     createHero(gBoard)
     createAliens(gBoard)
+    if (gLaserInterval) clearInterval(gLaserInterval)
     renderBoard(gBoard)
 }
 
@@ -80,18 +82,6 @@ function updateScore(diff) {
     // update model and dom
     if (gGame.isOn) gGame.score += diff
     else gGame.score = 0
-    document.querySelector('h1 span').innerText = gGame.score
-}
-
-function checkVictory() {
-    if (gGame.alienCount === 0) return
-}
-
-function gameOver() {
-
-}
-
-function endGame() {
-
+    document.querySelector('span').innerText = gGame.score
 }
 

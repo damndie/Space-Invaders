@@ -1,7 +1,12 @@
+*{
+    box-sizing: border-box
+}
+
 body {
     text-align: center;
     background-color: black;
     color: white;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .cell {
@@ -21,6 +26,19 @@ img {
     margin: auto;
 }
 
+.header{
+    background-color: darkblue;
+    border-radius: 8px;
+}
+
+.header *{
+    display: inline-block;
+    margin: 10px 10px;
+}
+
+.game-info *{
+    font-size: 40px;
+}
 
 .modal {
     background-color: rgb(227, 172, 76, 0.9);
@@ -34,7 +52,7 @@ img {
 }
 
 .hide {
-    display: 'none'
+    display: none
 }
 
 .ground{
@@ -42,13 +60,12 @@ img {
     border-radius: 5px;
 }
 
-.button {
-    background-color: #04AA6D;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
+h1{
+    font-size: 25px;
 }
+
+footer{
+    margin-top: 0.7em;
+    font-size: 23px;
+}
+

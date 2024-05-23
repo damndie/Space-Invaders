@@ -21,12 +21,3 @@ function laserSound(){
   sound.play()
 }
 
-function showModal() { 
-  const elModal = document.querySelector(".modal"); 
-  elModal.classList.remove("hide"); 
-} 
-
-function hideModal() { 
-  const elModal = document.querySelector(".modal"); 
-  elModal.classList.add("hide"); 
-} 
