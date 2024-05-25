@@ -16,8 +16,17 @@ function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function laserSound(){
+function laserSound() {
   const sound = new Audio('sound/laser.mp3')
   sound.play()
 }
 
+function showModal() {
+  const elModal = document.querySelector(".modal");
+  elModal.classList.remove("hide");
+}
+
+function hideModal() {
+  const elModal = document.querySelector(".modal");
+  elModal.classList.add("hide");
+}

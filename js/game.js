@@ -4,10 +4,16 @@ const BOARD_SIZE = 14
 const ALIEN_ROW_LENGTH = 8
 const ALIEN_ROW_COUNT = 3
 
+const CANDY = '🍬'
+const CANDY_APPEARANCE_INTERVAL = 10000
+const CANDY_DISAPPEAR_INTERVAL = 5000
+
 const HERO = '<img src="img/hero.jpg"'
 const ALIEN = '<img src="img/aliens.jpg"'
 const EXPLOSION = '💥'
 const SKY = ''
+
+var gCandyInterval
 
 // Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN} 
 var gBoard
@@ -15,18 +21,33 @@ var gGame = {
     isOn: false,
     score: 0,
     alienCount: ALIEN_ROW_LENGTH * ALIEN_ROW_COUNT,
+    isSuperMode: false,
+    superAttacks: 3,
+    lives: 3
 }
 
 // Called when game loads 
 function onInit() {
+    hideModal()
+    gBoard = createBoard()
+
     gGame.isOn = true
     gGame.isSuperMode = false
-    gBoard = createBoard()
+    gGame.superAttacks = 3
+    gGame.lives = 3
     gGame.score = 0
-    document.querySelector('span').innerText = '0'
+    document.querySelector('.score').innerText = '0'
+
     createHero(gBoard)
     createAliens(gBoard)
+
     if (gLaserInterval) clearInterval(gLaserInterval)
+    if (gCandyInterval) clearInterval(gCandyInterval)
+    if (gIntervalAliens) clearInterval(gIntervalAliens)
+    if (gRockInterval) clearInterval(gRockInterval)
+    gIntervalAliens = setInterval(moveAliens, ALIEN_SPEED)
+    gCandyInterval = setInterval(spawnCandy, CANDY_APPEARANCE_INTERVAL)
+    gRockInterval = setInterval(alienShootRocks, ROCK_SPAWN)
     renderBoard(gBoard)
 }
 
@@ -85,3 +106,18 @@ function updateScore(diff) {
     document.querySelector('span').innerText = gGame.score
 }
 
+function spawnCandy() {
+    const candyPos = { i: 0, j: getRandomIntInclusive(0, BOARD_SIZE - 1) }
+    updateCell(candyPos, CANDY)
+    setTimeout(() => {
+        updateCell(candyPos)
+    }, CANDY_DISAPPEAR_INTERVAL)
+}
+
+function updateLives(){
+    document.querySelector('.lives').innerText = gGame.lives
+}
+
+function gameOver(){
+    showModal()
+}

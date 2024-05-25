@@ -1,10 +1,16 @@
 'use strict'
 
 const ALIEN_SPEED = 500
+const ROCK_SPEED = 300
+const ROCK_SPAWN = 2000
 const ROCK = '🪨'
-var gIntervalAliens
+
 var gDeadAliens = []
+var gIntervalAliens
 var gAliensRockInterval
+var gRockInterval
+
+
 
 
 // The following two variables represent the part of the matrix (some rows) 
@@ -26,31 +32,34 @@ function createAliens(board) {
             // console.log('gGame.alienCount:', gGame.alienCount)
         }
     }
-    if (gIntervalAliens) clearInterval(gIntervalAliens)
-    gIntervalAliens = setInterval(moveAliens, ALIEN_SPEED)
 }
 
 function handleHit(pos, target) {
     if (target === ALIEN) {
+        updateScore(10)
         gDeadAliens.push(pos)
         renderBoard(gBoard)
-        // console.log('gDeadAliens:', gDeadAliens)
+    } else if (target === CANDY) {
+        updateScore(50)
+        gIsAlienFreeze = true;
+        setTimeout(() => {
+            gIsAlienFreeze = false;
+        }, 5000);
     }
-    updateScore(10)
+
     updateCell(pos, EXPLOSION)
     setTimeout(() => {
         updateCell(pos);
     }, 100);
     gGame.alienCount--
-
 }
 
 function shiftBoardRight(board, fromI, toI) {
     if (gIsAlienFreeze) return
-    for (let i = fromI; i <= toI; i++) {
+    for (var i = fromI; i <= toI; i++) {
         const row = board[i]
         const lastElement = { ...row[row.length - 1] } // Clone last element
-        for (let j = row.length - 1; j > 0; j--) {
+        for (var j = row.length - 1; j > 0; j--) {
             row[j] = row[j - 1]
         }
         row[0] = lastElement
@@ -59,10 +68,10 @@ function shiftBoardRight(board, fromI, toI) {
 
 function shiftBoardLeft(board, fromI, toI) {
     if (gIsAlienFreeze) return
-    for (let i = fromI; i <= toI; i++) {
+    for (var i = fromI; i <= toI; i++) {
         const row = board[i];
         const firstElement = { ...row[0] }; // Clone first element
-        for (let j = 0; j < row.length - 1; j++) {
+        for (var j = 0; j < row.length - 1; j++) {
             row[j] = row[j + 1]
         }
         row[row.length - 1] = firstElement;
@@ -71,9 +80,9 @@ function shiftBoardLeft(board, fromI, toI) {
 
 function shiftBoardDown(board, fromI, toI) {
     if (gIsAlienFreeze) return
-    for (let i = toI; i >= fromI; i--) {
+    for (var i = toI; i >= fromI; i--) {
         if (i + 1 < board.length) {
-            for (let j = 0; j < board[i].length; j++) {
+            for (var j = 0; j < board[i].length; j++) {
                 board[i + 1][j] = { ...board[i][j] } // Clone element
                 board[i][j] = { gameObject: SKY }
             }
@@ -92,7 +101,7 @@ function moveAliens() {
     if (gMoveDirection === 'right') {
         shiftBoardRight(gBoard, gAliensTopRowIdx, gAliensBottomRowIdx)
         // Checking if any alien is at the right edge
-        for (let i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
+        for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
             if (gBoard[i][BOARD_SIZE - 1].gameObject === ALIEN) {
                 gMoveDirection = 'left'
                 shiftBoardDown(gBoard, gAliensTopRowIdx, gAliensBottomRowIdx)
@@ -102,7 +111,7 @@ function moveAliens() {
     } else {
         shiftBoardLeft(gBoard, gAliensTopRowIdx, gAliensBottomRowIdx);
         // Checking if any alien is at the left edge
-        for (let i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
+        for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
             if (gBoard[i][0].gameObject === ALIEN) {
                 gMoveDirection = 'right'
                 shiftBoardDown(gBoard, gAliensTopRowIdx, gAliensBottomRowIdx)
@@ -113,11 +122,70 @@ function moveAliens() {
     renderBoard(gBoard)
 
     if (gAliensBottomRowIdx >= gHero.pos.i) {
-        clearInterval(gAliensInterval)
+        clearInterval(gIntervalAliens)
         gGame.isOn = false
         gIsAlienFreeze = true
         gameOver()
         return
     }
 }
+
+function alienShootRocks() {
+    if (!gGame.isOn) return
+    const aliens = []
+    for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            if (gBoard[i][j].gameObject === ALIEN) {
+                aliens.push({ i, j })
+            }
+        }
+    }
+
+    if (!aliens.length) return null
+
+    var randIdx = getRandomIntInclusive(0, aliens.length - 1)
+    var rockPos = aliens[randIdx]
+    shootRock(rockPos)
+}
+
+function shootRock(pos) {
+    var rockPos = { i: pos.i + 1, j: pos.j }
+    gRockInterval = setInterval(() => {
+        if (gBoard[rockPos.i][rockPos.j].gameObject === ALIEN) return
+        if (rockPos.i > BOARD_SIZE - 1) {
+            updateCell(rockPos)
+            clearInterval(gRockInterval)
+            return
+        }
+
+        if (rockPos.i === gHero.pos.i && rockPos.j === gHero.pos.j) {
+            updateCell(rockPos)
+            handleHeroHit()
+            if (gGame.lives > 0) {
+                updateLives()
+                return
+            }
+            gGame.isOn = false
+            updateCell(gHero.pos, null)
+            gHero.pos = { i: -1, j: -1 }
+            showModal()
+            renderBoard(gBoard)
+        }
+
+        const nextCell = gBoard[rockPos.i + 1][rockPos.j].gameObject
+
+        if (nextCell === HERO) {
+            clearInterval(gRockInterval)
+            handleHeroHit()
+            updateCell(rockPos)
+        } else {
+            if (rockPos.i >= 0) {
+                updateCell(rockPos)
+            }
+            rockPos.i++
+            updateCell(rockPos, ROCK)
+        }
+    }, ROCK_SPEED)
+}
+
 

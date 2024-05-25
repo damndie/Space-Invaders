@@ -1,4 +1,4 @@
-*{
+* {
     box-sizing: border-box
 }
 
@@ -26,17 +26,16 @@ img {
     margin: auto;
 }
 
-.header{
-    background-color: darkblue;
-    border-radius: 8px;
+.ability {
+    font-size: 40px;
 }
 
-.header *{
+.info-container * {
     display: inline-block;
     margin: 10px 10px;
 }
 
-.game-info *{
+.game-info * {
     font-size: 40px;
 }
 
@@ -51,21 +50,20 @@ img {
     left: calc(50% - 175px);
 }
 
-.hide {
-    display: none
-}
-
-.ground{
+.ground {
     background-color: red;
     border-radius: 5px;
 }
 
-h1{
+h1 {
     font-size: 25px;
 }
 
-footer{
+footer {
     margin-top: 0.7em;
     font-size: 23px;
 }
 
+.hide {
+    display: none;
+}

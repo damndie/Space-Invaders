@@ -11,22 +11,29 @@
 <body onload="onInit()" onkeydown="onKeyDown(event)">
     <h1>Space Invader</h1>
     <hr>
-    <div class="container">
+    <div class="ability"> Score: <span class="score">0</span>
+        | Super Attacks Left: <span class="super-attacks">3</span> |
+        Lives left: <span class="lives">3</span>
+    </div>
+    <div class="info-container">
         <div class="game-info">
-            <div> Score: <span class="Score">0</span> |
-                <span>Keys:</span> |
-                <span>F5 = Restart</span> |
-                <span>Space = Shoot</span> |
-                <span>Arrows = Right/Left</span>
-            </div>
+            <span>Keys: </span>
+            <span>F5 = Restart</span> |
+            <span>Space = Shoot</span> |
+            <span>Arrows = Right/Left</span> |
+            <span>Super Mode = X</span>
         </div>
     </div>
 
-    
+
     <table class="board-container">
 
     </table>
 
+    <div class="modal">
+        <h2>Game over</h2>
+        <h3>Press F5 to restart</h2>
+    </div>
 
     <footer>
         Made by Daniel Vinitsky
