@@ -5,7 +5,6 @@ const SUPER_LASER_SPEED = 40
 const LASER_DURATION = 2000
 const LASER = '🔴'
 const SUPER_LASER = '🔥'
-const SHIELD_DURATION = 5000
 
 var gLaserInterval
 
@@ -74,13 +73,10 @@ function blinkLaser(pos, laserSymbol) {
     const nextCell = gBoard[nextPos.i][nextPos.j].gameObject
 
     if (!nextPos.i || nextCell === ALIEN || nextCell === CANDY){
-
+        if (!pos.i) return
         clearInterval(gLaserInterval)
         gHero.isShoot = false
         updateCell(pos)
-
-        if (!pos.i) return
-    
         handleHit(nextPos, nextCell)
     } else {
         if (pos.i !== gHero.pos.i) {
@@ -111,7 +107,7 @@ function handleHeroHit() {
         console.log('Hitted Hero:')
         return
     }
-    clearInterval(gIntervalAliens)
+    clearInterval(gAliensInterval)
     clearInterval(gRockInterval)
     gGame.isOn = false
     return

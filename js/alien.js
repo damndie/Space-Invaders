@@ -1,17 +1,13 @@
 'use strict'
 
-const ALIEN_SPEED = 500
 const ROCK_SPEED = 300
 const ROCK_SPAWN = 2000
 const ROCK = '🪨'
+const EXPLOSION = '💥'
 
 var gDeadAliens = []
-var gIntervalAliens
-var gAliensRockInterval
+var gAliensInterval
 var gRockInterval
-
-
-
 
 // The following two variables represent the part of the matrix (some rows) 
 // that we should shift (left, right, and bottom) 
@@ -122,7 +118,7 @@ function moveAliens() {
     renderBoard(gBoard)
 
     if (gAliensBottomRowIdx >= gHero.pos.i) {
-        clearInterval(gIntervalAliens)
+        clearInterval(gAliensInterval)
         gGame.isOn = false
         gIsAlienFreeze = true
         gameOver()
@@ -170,22 +166,22 @@ function shootRock(pos) {
             gHero.pos = { i: -1, j: -1 }
             showModal()
             renderBoard(gBoard)
-        }
+        } else if (rockPos.i < BOARD_SIZE - 1) {
+            const nextCell = gBoard[rockPos.i + 1][rockPos.j].gameObject
 
-        const nextCell = gBoard[rockPos.i + 1][rockPos.j].gameObject
-
-        if (nextCell === HERO) {
-            clearInterval(gRockInterval)
-            handleHeroHit()
-            updateCell(rockPos)
-        } else {
-            if (rockPos.i >= 0) {
+            if (nextCell === HERO) {
+                clearInterval(gRockInterval)
+                handleHeroHit()
                 updateCell(rockPos)
+            } else {
+                if (rockPos.i >= 0) {
+                    updateCell(rockPos)
+                }
+                rockPos.i++
+                updateCell(rockPos, ROCK)
+
             }
-            rockPos.i++
-            updateCell(rockPos, ROCK)
         }
     }, ROCK_SPEED)
 }
-
 

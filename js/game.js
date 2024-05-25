@@ -3,6 +3,7 @@
 const BOARD_SIZE = 14
 const ALIEN_ROW_LENGTH = 8
 const ALIEN_ROW_COUNT = 3
+const ALIEN_SPEED = 500
 
 const CANDY = '🍬'
 const CANDY_APPEARANCE_INTERVAL = 10000
@@ -10,7 +11,6 @@ const CANDY_DISAPPEAR_INTERVAL = 5000
 
 const HERO = '<img src="img/hero.jpg"'
 const ALIEN = '<img src="img/aliens.jpg"'
-const EXPLOSION = '💥'
 const SKY = ''
 
 var gCandyInterval
@@ -43,9 +43,9 @@ function onInit() {
 
     if (gLaserInterval) clearInterval(gLaserInterval)
     if (gCandyInterval) clearInterval(gCandyInterval)
-    if (gIntervalAliens) clearInterval(gIntervalAliens)
+    if (gAliensInterval) clearInterval(gAliensInterval)
     if (gRockInterval) clearInterval(gRockInterval)
-    gIntervalAliens = setInterval(moveAliens, ALIEN_SPEED)
+    gAliensInterval = setInterval(moveAliens, ALIEN_SPEED)
     gCandyInterval = setInterval(spawnCandy, CANDY_APPEARANCE_INTERVAL)
     gRockInterval = setInterval(alienShootRocks, ROCK_SPAWN)
     renderBoard(gBoard)
